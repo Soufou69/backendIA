@@ -95,13 +95,21 @@
 
 
         <div id="upload" class="hero d-f-center-all">
+            <div id="result" class="d-f-center-all hide" style="justify-content: flex-start;">
+                <div class="close-button">
+                    <span onclick="hideResult()">&times;</span>
+                  </div>
+                <h1>Results :</h1>
+                <img id="well" />
+                <img id="coords" style="width: 400px;"/>
+            </div>
             <div class="container">
                 <h2>Upload your PDF file to try !</h2>
                 <div class="upload-container">
-                    <input type="file" id="file_upload" accept="application/pdf"/>
+                    <input type="file" id="file_upload" name="file" accept="application/pdf"/>
                 </div>
                 <br>
-                <button class="upload-btn" onclick="uploadFiles()">Submit</button>
+                <button class="upload-btn" onclick="uploadFile()">Submit</button>
             </div>
         </div>
 
@@ -111,17 +119,90 @@
 
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script>
-            function uploadFiles() {
+            function showResult(){
+                var result = document.getElementById("result")
+                if(result.classList.contains("hide")){
+                    result.classList.remove("hide");
+                }
+            }
+
+            function hideResult(){
+                var result = document.getElementById("result")
+                if(!result.classList.contains("hide")){
+                    result.classList.add("hide");
+                }
+            }
+
+            function uploadFile() {
                 var files = document.getElementById('file_upload').files;
                 if(files.length==0){
                     alert("Please first choose or drop any file(s)...");
                     return;
                 }
-                var filenames="";
-                for(var i=0;i<files.length;i++){
-                    filenames+=files[i].name+"\n";
+
+                const fileInput = document.querySelector('#file_upload');
+
+                // Get the selected file and its extension
+                const file = fileInput.files[0];
+                const extension = file.name.split('.').pop().toLowerCase();
+
+                // Check if the file extension is valid (PDF or JPG)
+                if (extension === 'pdf' || extension === 'jpg') {
+                // Create a new FormData object
+                const formData = new FormData();
+
+                // Append the file to the FormData object
+                formData.append('file', file);
+                showResult();
+                // Make a POST request to the server with the FormData object as the body
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        response.clone().json().then(res => {
+                                if(res[0]==true){
+                                    console.log("File uploaded ! Lets process that !");
+                                    const data = new FormData();
+                                    data.append('fileName', res[1]);
+                                    fetch('/process', {
+                                        method: 'POST',
+                                        body: data
+                                    })
+                                    .then(response => response.json())
+                                    .then(data =>{
+                                        var imgUrls = []
+                                        for(let i=0;i<Object.keys(data[1]).length;i++){
+                                            const imgData = atob(data[1][i]);
+                                            const imgArray = new Uint8Array(imgData.length);
+                                            for (let i = 0; i < imgData.length; i++) {
+                                                imgArray[i] = imgData.charCodeAt(i);
+                                            }
+                                            // Create a blob from the image data and create a data URL
+                                            const imgBlob = new Blob([imgArray], { type: 'image/jpeg' });
+                                            const imgUrl = URL.createObjectURL(imgBlob);
+
+                                            // Set the image src to the data URL
+                                            imgUrls.push(imgUrl);
+                                        }
+                                        imgCoords = document.getElementById("coords");
+                                        imgCoords.src = imgUrls[0];
+                                        imgWell = document.getElementById("well");
+                                        imgWell.src = imgUrls[2]
+                                        
+                                    })
+                                    .catch(error => console.error("Error on the processing :",error));
+                                }else {console.log("Error 001");}
+                            })
+                            .catch(error => {console.log('Error while getting response text from upload :', error);})                        
+                    })
+                    .catch(error => {
+                    console.error('Error:', error);
+                    });
+                } else {
+                // Display an error message if the file extension is not valid
+                console.error('Invalid file extension. Only PDF and JPG files are allowed.');
                 }
-                alert("Selected file(s) :\n____________________\n"+filenames);
             }
 
             function showMenu(){

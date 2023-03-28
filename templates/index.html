@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Index</title>
+        <link rel="stylesheet" href="/static/style.css" />
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="menu" class="hide">
+            <div class="menu-left anim-menu-left" style="z-index: 100;"></div>
+            <div class="menu-right anim-menu-right">
+                <ul>
+                    <li><h3>Menu</h3></li>
+                    <hr style="width:80%;"/>
+                    <li onclick="document.getElementById('landing-hero').scrollIntoView({behavior:'smooth'});hideMenu();"><h3 class="menu-item">Home</h3></li>
+                    <li onclick="document.getElementById('explanation').scrollIntoView({behavior:'smooth'});hideMenu();"><h3 class="menu-item">Usage</h3></li>
+                    <li onclick="document.getElementById('upload').scrollIntoView({behavior:'smooth'});hideMenu();"><h3 class="menu-item">Try it !</h3></li>
+                </ul>
+            </div>
+        </div>
+        <div class="hero d-f-center-all">
+            <div id="landing-hero">
+                <div class="lineContainer" data-aos="fade-left" data-aos-duration="1500" data-aos-delay="150">
+                    <p class="btnMenu">Menu</p>
+                    <svg width="20px" viewBox="0 0 30 40" preserveAspectRatio="none">
+                        <path d='M0,0 L15,15 L30,0 V40 H-10 V-40 ' fill="#40513B" />
+                    </svg>
+                    <div class="line"></div>
+                    <svg width="20px" height="10%" viewBox="0 0 30 40" preserveAspectRatio="none">
+                        <line stroke-dasharray="5,5" x1="0" y1="0" x2="0" y2="60" stroke="#40513B" stroke-width="60px" />
+                    </svg>
+                </div>
+
+                <div class="content" data-aos="fade-up" data-aos-duration="1500">
+                    <div class="container">
+                        <div class="col">
+                        <h1>Composite Log Analyzer</h1>
+                            <h2>Let our IA analyze your PDF file containing a completion log or composite log to have a summary of the Maureen formation.</h2>
+                            <a href="#" onclick="event.preventDefault();document.getElementById('upload').scrollIntoView({behavior:'smooth'});hideMenu();"><button class="button animatedButton">Try me !</button></a>
+                        </div>
+                    </div>
+                    <img src="/static/ressources/images/world.svg" class="bg-img" style=" right:0vw; width: calc( (2000vw) /(30) );"/>
+                    <div class="circle-arrow" onclick="document.getElementById('explanation').scrollIntoView({behavior:'smooth'});"><b class="arrow">&darr;</b></div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div id="explanation" class="hero">
+            <div class="lineContainer" style="top: 100%;" data-aos="fade-left" data-aos-duration="1500" data-aos-delay="150">
+                <p class="btnMenu">Usage</p>
+                <svg width="20px" viewBox="0 0 30 40" preserveAspectRatio="none">
+                    <path d='M0,0 L15,15 L30,0 V40 H-10 V-40 ' fill="#40513B" />
+                </svg>
+                <div class="line"></div>
+                <svg width="20px" height="10%" viewBox="0 0 30 40" preserveAspectRatio="none">
+                    <line stroke-dasharray="5,5" x1="0" y1="0" x2="0" y2="60" stroke="#40513B" stroke-width="60px" />
+                </svg>
+            </div>
+            <div class="bloc cloud"></div>
+            <div class="bloc sky">
+                <div class="container-sky" data-aos="fade-down" data-aos-duration="1500" style="position: inherit; z-index: 50;">
+                    <img src="/static/ressources/images/Leaves_object.svg" alt="leaves" style="max-width: 10%;transform: translate(10px, 25px);z-index: 10;"/>
+                    <div class="col-sky">
+                            <p>Transform your PDF document with a Completion Report</p>
+                            <img src="/static/ressources/images/doc.svg" alt="doc" style="max-width: 300px;"/>
+                    </div>
+                    <div class="col-sky">
+                            <img src="/static/ressources/images/arrow-right.svg" alt="arrow" style="max-width: 300px;"/>
+                    </div>
+                
+                    <div class="col-sky">
+                        <p>To a simple report with charts</p>
+                        <img src="/static/ressources/images/report.svg" alt="doc" style="max-width: 300px;"/>
+                    </div>
+                    <img src="/static/ressources/images/Leaves_object.svg" alt="leaves" style="max-width: 10%;transform: translate(0px, 10px);z-index: 10;"/>
+                </div>
+            </div>
+            <div class="bloc grass"><div class="custom-shape-divider-top-1679580974">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" style="width: calc(190% + 1.3px);">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                </svg>
+            </div></div>
+            <div class="bloc dirt"><div class="custom-shape-divider-top-1679580974">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"style="width: calc(120% + 1.3px);">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="grass"></path>
+                </svg>
+            </div></div>
+            <div class="bloc sand"><div class="custom-shape-divider-top-1679580974">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" style="width: calc(150% + 1.3px);">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="dirt"></path>
+                </svg>
+            </div></div>
+        </div>
+
+
+        <div id="upload" class="hero d-f-center-all">
+            <div class="container">
+                <h2>Upload your PDF file to try !</h2>
+                <div class="upload-container">
+                    <input type="file" id="file_upload" accept="application/pdf"/>
+                </div>
+                <br>
+                <button class="upload-btn" onclick="uploadFiles()">Submit</button>
+            </div>
+        </div>
+
+        <div id="footer">
+            <p>DATA Battle IA Pau 2023 - TEAM CY TOTAL</p>
+        </div>
+
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            function uploadFiles() {
+                var files = document.getElementById('file_upload').files;
+                if(files.length==0){
+                    alert("Please first choose or drop any file(s)...");
+                    return;
+                }
+                var filenames="";
+                for(var i=0;i<files.length;i++){
+                    filenames+=files[i].name+"\n";
+                }
+                alert("Selected file(s) :\n____________________\n"+filenames);
+            }
+
+            function showMenu(){
+                var menu = document.getElementById("menu")
+                if(menu.classList.contains("hide")){
+                    menu.classList.remove("hide");
+                }
+            }
+
+            function hideMenu(){
+                var menu = document.getElementById("menu")
+                if(!menu.classList.contains("hide")){
+                   menu.classList.add("hide");
+                }
+                                       
+                    
+            }
+            AOS.init();
+            var e = document.getElementsByClassName("btnMenu");
+
+            Array.from(e).forEach(el=>{el.addEventListener("click", showMenu)});
+            document.getElementsByClassName("menu-left")[0].addEventListener("click", hideMenu);
+          </script>
+    </body>
+</html>

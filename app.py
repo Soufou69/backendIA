@@ -10,7 +10,6 @@ import keras_ocr
 from pdf2image import convert_from_path
 import PyPDF2
 import cv2
-
 UPLOAD_FOLDER = 'PDFs/'
 ALLOWED_EXTENSIONS = {'pdf'}
 

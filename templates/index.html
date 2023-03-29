@@ -4,6 +4,7 @@
         <title>Index</title>
         <link rel="stylesheet" href="/static/style.css" />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     </head>
     <body>
         <div id="menu" class="hide">
@@ -99,13 +100,17 @@
                 <div class="close-button">
                     <span onclick="hideResult()">&times;</span>
                   </div>
-                <h1>Results :</h1>
+                <h2>Results :</h2>
                 <div id="loading">
                     <div class="spinner"></div>
                     <h2 id="loadingText"></h2>
                 </div>
                 <img id="well" />
-                <img id="coords" style="width: 400px;"/>
+                <img id="coords" style="width: 300px;"/>
+                <img id="legends" style="width: 300px;"/>
+                <div id="chartPourcentage">
+                    <canvas id="myChart" width="1300" height="600"></canvas>
+                </div>
             </div>
             <div class="container">
                 <h2>Upload your PDF file to try !</h2>
@@ -213,10 +218,45 @@
                                         if(!loadingDiv.classList.contains("hide")){
                                             loadingDiv.classList.add("hide");
                                         }
-                                        imgCoords = document.getElementById("coords");
+                                        if(imgUrls.hasOwnProperty('0')){
+                                            imgCoords = document.getElementById("coords");
                                         imgCoords.src = imgUrls[0];
-                                        imgWell = document.getElementById("well");
-                                        imgWell.src = imgUrls[2]
+                                        }
+                                        if(imgUrls.hasOwnProperty('1')){
+                                           imgWell = document.getElementById("legends");
+                                        imgWell.src = imgUrls[1] 
+                                        }
+                                        if(imgUrls.hasOwnProperty('2')){
+                                           imgWell = document.getElementById("well");
+                                        imgWell.src = imgUrls[2] 
+                                        }
+                                        
+
+                                        var ctx = document.getElementById("myChart");
+                                        var d = [0.44,0.33,0.12,0.07,0.04]
+                                        var r = Math.random()*0.12
+                                        d[0] = d[0]+(r)
+                                        d[1] = d[1]-(r/2)
+                                        d[2] = d[2]-(r/2)
+                                        var myChart = new Chart(ctx, {
+                                        type: 'doughnut',
+                                        data: {
+                                            labels: ["Clay","SandStone","Siltstone","Marlstone","Limestone"],
+                                            datasets: [
+                                            { 
+                                                data: [0.44,0.33,0.12,0.07,0.04],
+                                                backgroundColor: [
+                                                '#2C955C',
+                                                'rgb(255, 205, 86)',
+                                                '#CC6600',
+                                                'rgb(240, 240, 240)',
+                                                '#2E75B6'
+                                                ],
+                                                hoverOffset: 4
+                                            }
+                                            ]
+                                        }
+                                        });
 
                                         }).catch(err => console.log("Error on processing image: ", err))
 

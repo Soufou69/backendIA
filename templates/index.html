@@ -100,6 +100,10 @@
                     <span onclick="hideResult()">&times;</span>
                   </div>
                 <h1>Results :</h1>
+                <div id="loading">
+                    <div class="spinner"></div>
+                    <h2 id="loadingText"></h2>
+                </div>
                 <img id="well" />
                 <img id="coords" style="width: 400px;"/>
             </div>
@@ -134,6 +138,12 @@
             }
 
             function uploadFile() {
+                var loadingText = document.getElementById('loadingText');
+                var loadingDiv = document.getElementById('loading');
+                if(loadingDiv.classList.contains("hide")){
+                    loadingDiv.classList.remove("hide");
+                }
+
                 var files = document.getElementById('file_upload').files;
                 if(files.length==0){
                     alert("Please first choose or drop any file(s)...");
@@ -154,6 +164,7 @@
                 // Append the file to the FormData object
                 formData.append('file', file);
                 showResult();
+                loadingText.innerHTML = "Uploading File";
                 // Make a POST request to the server with the FormData object as the body
                 fetch('/upload', {
                     method: 'POST',
@@ -163,17 +174,31 @@
                         response.clone().json().then(res => {
                                 if(res[0]==true){
                                     console.log("File uploaded ! Lets process that !");
+                                    loadingText.innerHTML = "Preprocessing the PDF file";
                                     const data = new FormData();
                                     data.append('fileName', res[1]);
-                                    fetch('/process', {
+                                    fetch('/preprocessing', {
                                         method: 'POST',
                                         body: data
                                     })
                                     .then(response => response.json())
                                     .then(data =>{
-                                        var imgUrls = []
-                                        for(let i=0;i<Object.keys(data[1]).length;i++){
-                                            const imgData = atob(data[1][i]);
+                                        console.log("Preprocessing Finished ! Lets process the image !")
+                                        loadingText.innerHTML = "Processing the completion log";
+                                        if(data[0]){
+                                            const data2 = new FormData();
+                                            console.log('data1',data[1])
+                                            data2.append('fileName', data[1]);
+                                            fetch('/process', {
+                                            method: 'POST',
+                                            body: data2
+                                        })
+                                        .then(response => response.json())
+                                        .then(data=>{
+                                            console.log(data)
+                                            var imgUrls = {}
+                                        for(let d in data[1]){
+                                            const imgData = atob(data[1][d]);
                                             const imgArray = new Uint8Array(imgData.length);
                                             for (let i = 0; i < imgData.length; i++) {
                                                 imgArray[i] = imgData.charCodeAt(i);
@@ -183,12 +208,19 @@
                                             const imgUrl = URL.createObjectURL(imgBlob);
 
                                             // Set the image src to the data URL
-                                            imgUrls.push(imgUrl);
+                                            imgUrls[d]=imgUrl;
+                                        }
+                                        if(!loadingDiv.classList.contains("hide")){
+                                            loadingDiv.classList.add("hide");
                                         }
                                         imgCoords = document.getElementById("coords");
                                         imgCoords.src = imgUrls[0];
                                         imgWell = document.getElementById("well");
                                         imgWell.src = imgUrls[2]
+
+                                        }).catch(err => console.log("Error on processing image: ", err))
+
+                                        }
                                         
                                     })
                                     .catch(error => console.error("Error on the processing :",error));

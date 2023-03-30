@@ -10,6 +10,8 @@ import keras_ocr
 from pdf2image import convert_from_path
 import PyPDF2
 import cv2
+import shutil
+
 UPLOAD_FOLDER = 'PDFs/'
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -41,13 +43,13 @@ def preprocessing():
     #folder = os.listdir(main_path + "/" + sub_dir)
     folder = os.path.join(app.config['UPLOAD_FOLDER'],fileName.split('.')[0])
 
+    pdf_reader = PyPDF2.PdfReader(os.path.join(folder, fileName), strict=False)
+    if(os.path.isdir(os.path.join(folder,"LOGS"))):
+        shutil.rmtree(os.path.join(folder,"LOGS"), ignore_errors=True)
     #Verify that the pdf isn't already scanned
-    if "LOGS" not in folder :
+    if not(os.path.isdir(os.path.join(folder,"LOGS"))) :
             
         print ("\nSearching in document : " + fileName)
-        
-        #Open the PDF
-        pdf_reader = PyPDF2.PdfReader(os.path.join(folder, fileName), strict=False)
         #For each page of the PDF
         for page_num in range(len(pdf_reader.pages)):
             #Get pages one by one
@@ -159,6 +161,7 @@ def process():
     cropedImages = {}
     for r in results:
         r = r.numpy()
+        print(r.boxes.xyxy)
         for i in range(len(r.boxes.xyxy)):
             classDetected =int(r.boxes.cls[i]) 
             if(bestClasses[classDetected] != []):
@@ -173,9 +176,42 @@ def process():
             pilImage.save(buffered, format="JPEG")
             img_str = base64.b64encode(buffered.getvalue()).decode()
             cropedImages[i] = img_str
-    print(cropedImages)
 
     return [True, cropedImages]
+@app.route('/litho', methods=["POST"])
+def takeLitho():
+    model = YOLO("best2.pt")
+    fileName = request.form.get('fileName')
+    if(fileName==None):
+        return [False]
+    folder = os.path.join(os.path.join(app.config['UPLOAD_FOLDER'],fileName.split('.')[0]),'LOGS')
+    files = os.listdir(folder)
+    file = files[(len(files)//2)]
+    pathFile = os.path.join(folder,file)
+    im1 = Image.open(pathFile)
+    results = model.predict(source=im1)
+    nbrClasses = len(results[0].names)
+    bestClasses = [[]]*nbrClasses
+    lithoImage = {}
+    for r in results:
+        r = r.numpy()
+        for i in range(len(r.boxes.xyxy)):
+            classDetected =int(r.boxes.cls[i]) 
+            if(bestClasses[classDetected] != []):
+                if(r.boxes.conf[i]>bestClasses[classDetected][1]):
+                    bestClasses[classDetected] = [r.boxes.xyxy[i],r.boxes.conf[i]]
+            else:
+                bestClasses[classDetected] = [r.boxes.xyxy[i],r.boxes.conf[i]]
+    for i in range(len(bestClasses)):
+        if(bestClasses[i] != []):
+            pilImage = im1.crop((bestClasses[i][0][0],bestClasses[i][0][1],bestClasses[i][0][2],bestClasses[i][0][3]))
+            buffered = io.BytesIO()
+            pilImage.save(buffered, format="JPEG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
+            lithoImage[i] = img_str
+
+    return [True, lithoImage]
+
 
 if __name__ == '__main__':
    app.run()

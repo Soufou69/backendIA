@@ -105,12 +105,22 @@
                     <div class="spinner"></div>
                     <h2 id="loadingText"></h2>
                 </div>
-                <img id="well" />
-                <img id="coords" style="width: 300px;"/>
-                <img id="legends" style="width: 300px;"/>
+                <div class="lithoDiv" style="display: flex;flex-direction: row;
+                justify-content: center;
+                align-items: center;">
+                    <div style="display: flex;
+                    flex-direction: column;">
+                        <img id="well" />
+                        <img id="coords" style="width: 300px;"/>
+                        <img id="legends" style="width: 300px;"/>
+                    </div>
+                    <img id="litho" style="width: 20px;"/>
+                    
+                </div>
                 <div id="chartPourcentage">
                     <canvas id="myChart" width="1300" height="600"></canvas>
                 </div>
+                
             </div>
             <div class="container">
                 <h2>Upload your PDF file to try !</h2>
@@ -231,6 +241,35 @@
                                         imgWell.src = imgUrls[2] 
                                         }
                                         
+                                        const data3 = new FormData();
+                                        data3.append("fileName", file);
+                                        fetch('/litho', {
+                                        method: 'POST',
+                                        body: data2
+                                    })
+                                    .then(response => response.json())
+                                    .then(data =>{console.log(data)
+                                        imgUrls={}
+                                        for(let d in data[1]){
+                                            const imgData = atob(data[1][d]);
+                                            const imgArray = new Uint8Array(imgData.length);
+                                            for (let i = 0; i < imgData.length; i++) {
+                                                imgArray[i] = imgData.charCodeAt(i);
+                                            }
+                                            // Create a blob from the image data and create a data URL
+                                            const imgBlob = new Blob([imgArray], { type: 'image/jpeg' });
+                                            const imgUrl = URL.createObjectURL(imgBlob);
+
+                                            // Set the image src to the data URL
+                                            imgUrls[d]=imgUrl;
+                                        }
+                                        if(imgUrls.hasOwnProperty('0')){
+                                            imgCoords = document.getElementById("litho");
+                                        imgCoords.src = imgUrls[0];
+                                        }
+                                    })
+                                    .catch(err=>console.log("Error in getting the litho col: ",err))
+
 
                                         var ctx = document.getElementById("myChart");
                                         var d = [0.44,0.33,0.12,0.07,0.04]

@@ -105,22 +105,26 @@
                     <div class="spinner"></div>
                     <h2 id="loadingText"></h2>
                 </div>
-                <div class="lithoDiv" style="display: flex;flex-direction: row;
+                <div id="info" class="hide" style="display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;">
-                    <div style="display: flex;
-                    flex-direction: column;">
-                        <img id="well" />
-                        <img id="coords" style="width: 300px;"/>
-                        <img id="legends" style="width: 300px;"/>
+                    <div class="lithoDiv" style="display: flex;flex-direction: row;
+                    justify-content: center;
+                    align-items: center;">
+                        <div style="display: flex;
+                        flex-direction: column;">
+                            <img id="well" />
+                            <img id="coords" style="width: 300px;"/>
+                            <img id="legends" style="width: 300px;"/>
+                        </div>
+                        <img id="litho" style="width: 20px;"/>
+                        
                     </div>
-                    <img id="litho" style="width: 20px;"/>
-                    
+                    <div id="chartPourcentage">
+                        <canvas id="myChart" width="1300" height="600"></canvas>
+                    </div>
                 </div>
-                <div id="chartPourcentage">
-                    <canvas id="myChart" width="1300" height="600"></canvas>
-                </div>
-                
             </div>
             <div class="container">
                 <h2>Upload your PDF file to try !</h2>
@@ -145,8 +149,16 @@
                 }
             }
 
+            function closeResult(){
+                
+            }
+
             function hideResult(){
                 var result = document.getElementById("result")
+                var infosDiv = document.getElementById("info")
+                if(!infosDiv.classList.contains("hide")){
+                    infosDiv.classList.add("hide");
+                }
                 if(!result.classList.contains("hide")){
                     result.classList.add("hide");
                 }
@@ -210,6 +222,7 @@
                                         })
                                         .then(response => response.json())
                                         .then(data=>{
+                                            loadingText.innerHTML = "Retrieving images of the first page";
                                             console.log(data)
                                             var imgUrls = {}
                                         for(let d in data[1]){
@@ -224,9 +237,6 @@
 
                                             // Set the image src to the data URL
                                             imgUrls[d]=imgUrl;
-                                        }
-                                        if(!loadingDiv.classList.contains("hide")){
-                                            loadingDiv.classList.add("hide");
                                         }
                                         if(imgUrls.hasOwnProperty('0')){
                                             imgCoords = document.getElementById("coords");
@@ -248,8 +258,9 @@
                                         body: data2
                                     })
                                     .then(response => response.json())
-                                    .then(data =>{console.log(data)
-                                        imgUrls={}
+                                    .then(data =>{console.log(data);
+                                        imgUrls={};
+                                        loadingText.innerHTML = "Retrieving image of the litho col";
                                         for(let d in data[1]){
                                             const imgData = atob(data[1][d]);
                                             const imgArray = new Uint8Array(imgData.length);
@@ -270,7 +281,13 @@
                                     })
                                     .catch(err=>console.log("Error in getting the litho col: ",err))
 
-
+                                    if(!loadingDiv.classList.contains("hide")){
+                                            loadingDiv.classList.add("hide");
+                                        }
+                                        var infosDiv = document.getElementById("info");
+                                        if(infosDiv.classList.contains("hide")){
+                                            infosDiv.classList.remove("hide");
+                                        }
                                         var ctx = document.getElementById("myChart");
                                         var d = [0.44,0.33,0.12,0.07,0.04]
                                         var r = Math.random()*0.12
